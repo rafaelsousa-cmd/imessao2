@@ -1,0 +1,25 @@
+{
+  "name": "tasks-api",
+  "version": "1.0.0",
+  "description": "API de tarefas — exemplo da Imersão DevOps",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest --runInBand --forceExit"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": ["./jest.setup.js"]
+  }
+}
