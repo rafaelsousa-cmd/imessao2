@@ -157,53 +157,53 @@ jobs:
 # TIER 4 — Deploy na EC2
 # ════════════════════════════════════════════════════════
 
-  # deploy:
-  #   name: 🚀 Deploy → EC2
-  #   runs-on: ubuntu-latest
-  #   needs: push
-  #   if: github.event_name == 'push'
-  #   environment: production
+  deploy:
+    name: 🚀 Deploy → EC2
+    runs-on: ubuntu-latest
+    needs: push
+    if: github.event_name == 'push'
+    environment: production
 
-  #   steps:
-  #     - name: Deploy via SSH
-  #       uses: appleboy/ssh-action@v1
-  #       with:
-  #         host: ${{ secrets.EC2_HOST }}
-  #         username: ubuntu
-  #         key: ${{ secrets.EC2_SSH_KEY }}
-  #         script: |
-  #           cd ~/app
-  #           aws ecr get-login-password --region ${{ env.AWS_REGION }} | \
-  #             docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
-  #           docker compose -f docker-compose.prod.yml pull
-  #           docker compose -f docker-compose.prod.yml up -d --remove-orphans
-  #           docker image prune -f
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/app
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | \
+              docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker image prune -f
 
 # ════════════════════════════════════════════════════════
 # TIER 5 — Verificação pós-deploy
 # ════════════════════════════════════════════════════════
 
-  # healthcheck:
-  #   name: ✅ Health Check
-  #   runs-on: ubuntu-latest
-  #   needs: deploy
-  #   if: github.event_name == 'push'
+  healthcheck:
+    name: ✅ Health Check
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.event_name == 'push'
 
-  #   steps:
-  #     - name: Aguardar inicialização
-  #       run: sleep 15
+    steps:
+      - name: Aguardar inicialização
+        run: sleep 15
 
-  #     - name: Verificar endpoint /health
-  #       run: |
-  #         echo "Verificando aplicação em ${{ secrets.EC2_HOST }}..."
-  #         for i in {1..10}; do
-  #           echo "Tentativa $i/10"
-  #           if curl -sf --max-time 5 http://${{ secrets.EC2_HOST }}:3000/health; then
-  #             echo ""
-  #             echo "Aplicação respondendo — deploy concluído com sucesso!"
-  #             exit 0
-  #           fi
-  #           sleep 10
-  #         done
-  #         echo "Aplicação não respondeu após 10 tentativas (100s)"
-  #         exit 1
+      - name: Verificar endpoint /health
+        run: |
+          echo "Verificando aplicação em ${{ secrets.EC2_HOST }}..."
+          for i in {1..10}; do
+            echo "Tentativa $i/10"
+            if curl -sf --max-time 5 http://${{ secrets.EC2_HOST }}:3000/health; then
+              echo ""
+              echo "Aplicação respondendo — deploy concluído com sucesso!"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Aplicação não respondeu após 10 tentativas (100s)"
+          exit 1
