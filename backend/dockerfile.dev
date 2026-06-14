@@ -1,0 +1,14 @@
+from node:22-alpine
+
+workdir /app
+
+copy . .
+
+run npm ci --only=development
+
+copy src ./src/
+
+expose 3000
+env node_env=development
+
+cmd ["npm", "run", "dev"]

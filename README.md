@@ -122,3 +122,5 @@ Para configurar, adicione os seguintes secrets no repositório:
 | `ECR_REGISTRY`         | URL do registry (`<id>.dkr.ecr...`) |
 | `EC2_HOST`             | IP público da instância          |
 | `EC2_SSH_KEY`          | Chave privada SSH (conteúdo do `.pem`) |
+
+.
